@@ -43,7 +43,7 @@ public class Store {
 
 
         // Customer1 Buying items from store
-        customer1.addToCart("Mango", 4);
+        customer1.addToCart("Mango", 25);
         customer1.addToCart("Orange", 65);
         customer1.addToCart("Banana", 2);
         customer1.addToCart("miksi", 3);

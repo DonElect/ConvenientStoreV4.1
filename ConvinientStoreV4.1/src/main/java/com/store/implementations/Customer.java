@@ -21,11 +21,7 @@ public class Customer {
 
     public String addToCart(String item, int quantity) {
         item = item.toLowerCase();
-        String result = productCheck(item);
-        Map<String, ProductDetails> itemCategory = (result.equalsIgnoreCase("vegetables"))? products.getVegetables():
-                (result.equalsIgnoreCase("provisions"))? products.getProvisions():
-                        (result.equalsIgnoreCase("fruits"))? products.getFruits():
-                                (result.equalsIgnoreCase("tools"))? products.getFruits(): null;
+        Map<String, ProductDetails> itemCategory = productCheck(item);
         if(itemCategory != null) {
             if(adjustQuantity(item, quantity)) {
                 if (cart.containsKey(item)) {
@@ -44,8 +40,12 @@ public class Customer {
                 return "DONE";
             }
             else {
-                System.out.println("OUT OF STOCK");
-                return "OUT-OF-STOCK";
+                if(itemCategory.get(item).getQuantity() == 0){
+                    System.out.println("OUT OF STOCK");
+                    System.out.println();
+                    return "OUT-OF-STOCK";
+                }
+                else System.out.println(item.toUpperCase()+"s remaining "+ itemCategory.get(item).getQuantity());
             }
         }
         else
@@ -97,11 +97,11 @@ public class Customer {
         products.view(CAT);
     }
 
-    private String productCheck(String productName){
-        return products.getProvisions().containsKey(productName)? "provisions":
-                products.getVegetables().containsKey(productName)? "vegetables":
-                        products.getFruits().containsKey(productName)? "fruits":
-                                products.getTools().containsKey(productName)? "tools":"";
+    private Map<String, ProductDetails> productCheck(String productName){
+        return products.getProvisions().containsKey(productName)? products.getProvisions():
+                products.getVegetables().containsKey(productName)? products.getProvisions():
+                        products.getFruits().containsKey(productName)? products.getFruits():
+                                products.getTools().containsKey(productName)? products.getTools():null;
     }
 
     private boolean adjustQuantity(String item, int quantity){
@@ -110,20 +110,16 @@ public class Customer {
                 products.getFruits().get(item).setQuantity(products.getFruits().get(item).getQuantity() - quantity);
                 return true;
             }
-            else{
-                System.out.println(item.toUpperCase()+"s remaining "+ products.getFruits().get(item).getQuantity());
+            else
                 return false;
-            }
         }
         else if(products.getProvisions().containsKey(item)){
             if((products.getProvisions().get(item).getQuantity() - quantity) >= 0) {
                 products.getProvisions().get(item).setQuantity(products.getProvisions().get(item).getQuantity() - quantity);
                 return true;
             }
-            else {
-                System.out.println(item.toUpperCase()+"s remaining "+ products.getProvisions().get(item).getQuantity());
+            else
                 return false;
-            }
         }
         else if(products.getTools().containsKey(item)){
             if((products.getTools().get(item).getQuantity() - quantity) >= 0) {
@@ -131,7 +127,6 @@ public class Customer {
                 return true;
             }
             else {
-                System.out.println(item.toUpperCase()+"s remaining "+ products.getTools().get(item).getQuantity());
                 return false;
             }
         }
@@ -141,7 +136,7 @@ public class Customer {
                 return true;
             }
             else {
-                System.out.println(item.toUpperCase()+"s remaining "+ products.getVegetables().get(item).getQuantity());
+
                 return false;
             }
         }
